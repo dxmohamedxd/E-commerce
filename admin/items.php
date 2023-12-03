@@ -6,8 +6,7 @@
  * 
  * 
  **/
-  // URL image
-const URLIMG = 'admin/includes/imageUpload/';
+ $UrlImg = 'includes/imageUpload/';
 session_start();
 if(isset($_SESSION['username'])){
  
@@ -17,7 +16,6 @@ if(isset($_SESSION['username'])){
     $do = isset($_GET['do'])?$_GET['do']:'Manage';
       if($do=='Manage')
           {
-            
             echo"<h3 class='members my-5'>  All Prodects  </h3>";
             $prodect = mysqli_query($conn,"SELECT * FROM `items`");
             echo  "<div class='row'>";
@@ -25,7 +23,7 @@ if(isset($_SESSION['username'])){
             echo"
               <div class='col-sm-12 col-md-6 col-lg-3 col-xl-3 ms-5'>
                 <div class='my-2 card  shadow' style='width: 18rem;'>
-                  <img src='/imageUpload/.$row->image' class='card-img-top' alt='...'>
+                  <img src='".$UrlImg."$row->image' class='card-img-top' height='190' alt='...'>
                   <div class='card-body'>
                     <div class='card-title'>
                       $row->name
@@ -42,6 +40,10 @@ if(isset($_SESSION['username'])){
             ";
             }
         echo "</div>";
+
+     echo   "<div class='btn-add'>
+               <a href='items.php?do=Add' class='mb-3 btn btn float-start'> <span class='i-plus'> + </span></a> 
+             </div>";
       }elseif($do=='Add'){
             ?>
             <h3 class="members">Add New Items</h3>
@@ -55,7 +57,7 @@ if(isset($_SESSION['username'])){
                     <div class="row">
                     <label class="col-sm-2" style="font-weight: bold;">Name</label>
                     <div class="col-sm-8 col-md-6">
-                      <input type="text" name="name" class="form-control p-2"  placeholder="Name Of The Item" required>
+                      <input type="text" name="name" class="form-control p-2"  required>
                       <div class="valid-feedback alert alert-success">Good</div>
                       <div class="invalid-feedback alert alert-danger">Fill This Field</div>
                     </div>
@@ -65,7 +67,7 @@ if(isset($_SESSION['username'])){
                     <div class="row">
                         <label for="qty" class="col-sm-2 control-label" style="font-weight: bold;">Description</label>
                         <div class="col-sm-8 col-md-6">
-                          <input type="text"  class="form-control p-2" name="description" id="qty" placeholder='Describe The Item' required  >
+                          <input type="text"  class="form-control p-2" name="description" id="qty" required  >
                           <div class="valid-feedback alert alert-success">Good</div>
                           <div class="invalid-feedback alert alert-danger">Fill This Field</div>
 
@@ -76,7 +78,7 @@ if(isset($_SESSION['username'])){
                     <div class="row">
                       <label for="qty"  class="col-sm-2 control-label" style="font-weight: bold;">Price</label>
                       <div class="col-sm-8 col-md-6">
-                          <input type="text"  class="form-control p-2"   name="price"  placeholder="Price Of Item" required>
+                          <input type="text"  class="form-control p-2"   name="price"   required>
                           <div class="valid-feedback alert alert-success">Good</div>
                           <div class="invalid-feedback alert alert-danger">Fill This Field</div>
                         </div>
@@ -87,13 +89,13 @@ if(isset($_SESSION['username'])){
                     <div class="row">
                     <label class="col-sm-2 control-label"  style="font-weight: bold;"> Country Made </label>
                       <div class="col-sm-8 col-md-6">
-                        <input type="text"  class="form-control p-2"   name="country" placeholder="Country Of  Made" required>
+                        <input type="text"  class="form-control p-2"   name="country" required>
                           <div class="valid-feedback alert alert-success">Good</div>
                           <div class="invalid-feedback alert alert-danger">Fill This Field</div>
                       </div>
                       </div>
                     </div>
-                    <div class="form-group form-group-lg ">
+                    <div class="form-group form-group-lg">
                     <div class="row">
                     <label class="col-sm-2 control-label"  style="font-weight: bold;">Status </label>
                       <div class="col-sm-8 col-md-6">
@@ -145,7 +147,7 @@ if(isset($_SESSION['username'])){
                     <div class="row">
                     <label class="col-sm-2 control-label"  style="font-weight: bold;" id="#img">Image  </label>
                       <div class="col-sm-8 col-md-6">
-                        <input type="file"  class="form-control p-2"   name="image" id="img" placeholder="Image Of  Item">
+                        <input type="file"  class="form-control p-2"   name="image" id="img">
                       </div>
                       </div>
                     </div>
@@ -191,7 +193,7 @@ if(isset($_SESSION['username'])){
       
         }elseif ($do=="Update") {
               $itemid = isset($_GET['itemId'])&&is_numeric($_GET['itemId'])?intval($_GET['itemId']):0;
-              $query_Update = mysqli_query($conn,"SELECT * from items WHERE item_id = $itemid  LIMIT 1");
+              $query_Update = mysqli_query($conn,"SELECT * from items WHERE item_id = $itemid");
               $row = mysqli_fetch_object($query_Update);
               if(mysqli_num_rows($query_Update)>0){
                 ?>
@@ -206,7 +208,7 @@ if(isset($_SESSION['username'])){
                       <div class="row">
                       <label class="col-sm-2" style="font-weight: bold;">Name</label>
                       <div class="col-sm-8 col-md-6">
-                        <input type="text" name="name" value="<?php echo $row->name?>" class="form-control p-2"  placeholder="Name Of The Item" required>
+                        <input type="text" name="name" value="<?php echo $row->name?>" class="form-control p-2"  required>
                         <div class="valid-feedback alert alert-success">Good</div>
                         <div class="invalid-feedback alert alert-danger">Fill This Field</div>
                       </div>
@@ -216,7 +218,7 @@ if(isset($_SESSION['username'])){
                       <div class="row">
                           <label for="qty" class="col-sm-2 control-label" style="font-weight: bold;">Description</label>
                           <div class="col-sm-8 col-md-6">
-                            <input type="text"  class="form-control p-2" name="description" value="<?= $row->description ;?>"id="qty" placeholder='Describe The Item' required  >
+                            <input type="text"  class="form-control p-2" name="description" value="<?= $row->description ;?> "id="qty" required  >
                             <div class="valid-feedback alert alert-success">Good</div>
                             <div class="invalid-feedback alert alert-danger">Fill This Field</div>
   
@@ -227,7 +229,7 @@ if(isset($_SESSION['username'])){
                       <div class="row">
                         <label for="qty"  class="col-sm-2 control-label" style="font-weight: bold;">Price</label>
                         <div class="col-sm-8 col-md-6">
-                            <input type="text"  class="form-control p-2"   name="price" value="<?= $row->price ?>"  placeholder="Price Of Item" required>
+                            <input type="text"  class="form-control p-2"   name="price" value="<?= $row->price ?>" required>
                             <div class="valid-feedback alert alert-success">Good</div>
                             <div class="invalid-feedback alert alert-danger">Fill This Field</div>
                           </div>
@@ -238,7 +240,7 @@ if(isset($_SESSION['username'])){
                       <div class="row">
                       <label class="col-sm-2 control-label"  style="font-weight: bold;"> Country Made </label>
                         <div class="col-sm-8 col-md-6">
-                          <input type="text"  class="form-control p-2"   name="country" value="<?= $row->country_made?>" placeholder="Country Of  Made" required>
+                          <input type="text"  class="form-control p-2"   name="country" value="<?= $row->country_made?>"  required>
                             <div class="valid-feedback alert alert-success">Good</div>
                             <div class="invalid-feedback alert alert-danger">Fill This Field</div>
                         </div>
@@ -263,8 +265,8 @@ if(isset($_SESSION['username'])){
                       <div class="row">
                       <label class="col-sm-2 control-label"  style="font-weight: bold;">Image  </label>
                         <div class="col-sm-8 col-md-6">
-                        <label class="col-sm-2 control-label"  style="font-weight: bold;" for="img"><img src="" alt="logo" ></label>
-                          <input type="file"  class="form-control p-2"   name="image" id="img" placeholder="Image Of  Item" style="display:none">
+                        <label class="col-sm-2 control-label"  style="font-weight: bold;" for="img"><img src="<?php echo $UrlImg.$row->image;?>" alt="logo" height="190" width="500" ></label>
+                          <input type="file"  class="form-control p-2"   name="image" id="img" style="display:none">
                         </div>
                         </div>
                       </div>
@@ -310,7 +312,8 @@ if(isset($_SESSION['username'])){
         }elseif($do=="Delete") {
                 $itemid = isset($_GET['itemId'])&& is_numeric($_GET['itemId'])?intval($_GET['itemId']):0;
                  mysqli_query($conn,"DELETE FROM `items` WHERE item_id = $itemid");
-                 redirectHome(0);
+                 $msg = "<h3 class='alert alert-dange'>deleted Item Is Successfully </h3>";
+                 redirectHome($msg,"back");
         }elseif($do=="Approve") {
             echo "Approve";
               //  echo "delete";
