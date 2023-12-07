@@ -20,9 +20,10 @@ if(isset($_SESSION['username'])){
              <tr>
                <th>#ID</th>
                <th>Username</th>
-               <th>E-mail</th>
                <th>Full Name</th>
+               <th>E-mail</th>
                <th>Register Data</th>
+               <th>Status</th>
                <th>Control</th>
              </tr>
             
@@ -42,21 +43,29 @@ if(isset($_SESSION['username'])){
           
            //<<< heredoc
           echo "<tr>
-                    
                       <td>$row->UserID</td>
+                      <td>$row->Fullname</td>
                       <td>$row->Username</td>
                       <td>$row->Email</td>
-                      <td>$row->Fullname</td>
-                      <td> $row->Date</td>
-                      <td>
-                       <a href='?do=Edit&userId=$row->UserID' class='btn btn-success ms-1' style=\"margin-right:1
-                       
-                       0px\" >Edit</a>
-                       <a href='?do=Delete&userId=$row->UserID' class='btn btn-danger ' onclick=\"return confirm('Are You Sure Delete','Are You Sure')\">Delete</a>
+                      <td> $row->Date</td>";
+                      if($row->RegStatus==1){
+                        echo"<td style='font-weight:bold;'>Enabled</td>";
+
+                      }else{
+                        
+                        // echo"<td class='text-secondary' style='font-weight:bold'>Disabled</td>";
+                        echo "<td><a href='?do=Activate&UserID=$row->UserID' class='btn b btn-sm text-secondary' title='click here to Enabled' style='color:white;' onclick=\"return confirm('Do You Want To Activate The Member','activate')\"> Disabled</a></td>";
+
+                      }
+                echo"<td>";
+                if($row->RegStatus==0){
+                  echo "<a href='?do=Activate&UserID=$row->UserID' class='btn btn-outline-info btn-sm' onclick=\"return confirm('Do You Want To Activate The Member','activate')\">  Activate</a>";
+                 }
+                 echo  "<a href='?do=Edit&userId=$row->UserID' class='btn btn-outline-success btn-sm ms-1' style=\"margin-right:1
+                        0px\" >Edit</a>
+                       <a href='?do=Delete&userId=$row->UserID' class='btn btn-outline-danger btn-sm ' onclick=\"return confirm('Are You Sure Delete','Are You Sure')\">Delete</a>
                        ";
-                       if($row->RegStatus==0){
-                        echo "<a href='?do=Activate&UserID=$row->UserID' class='btn btn-info ' style='color:white' onclick=\"return confirm('Do You Want To Activate The Member','activate')\">  Activate</a>";
-                       }
+                     
                     echo "
                      </td>
                      </tr>
@@ -70,7 +79,7 @@ if(isset($_SESSION['username'])){
          </table>
           </div>
       <div class="btn-add">
-             <a href='members.php?do=Add' class="mb-3 btn btn float-start"> <span> + </span> New Member</a> 
+             <a href='members.php?do=Add' class="mb-3 btn btn btn-sm float-start"> <span> + </span> New Member</a> 
     </div>
 </div>
     <!-- models start  -->

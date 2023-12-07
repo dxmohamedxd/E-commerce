@@ -1,5 +1,5 @@
 <?php
-include "ConDB.php";
+include "conn/ConDB.php";
 // routes
 $tpls = 'includes/templates/'; //
 $func = "includes/functions/";

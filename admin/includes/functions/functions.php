@@ -114,6 +114,18 @@ function addToDatabase($table,...$valueform){
         echo "لم تتم العملية";
       }
 }
+
+/*
+ .. This function join tables
+ .. Fetching data from more than one table
+*/
+ function JoinMoreTable($parentTable='items',$childTable=[]){
+  global $conn;
+  $sql = "SELECT $parentTable.*,$childTable[0].Name AS cat_name,$childTable[1].Username as user_name FROM items INNER JOIN $childTable[0] ON $childTable[0].ID =$parentTable.cat_id 
+  INNER JOIN $childTable[1] ON $childTable[1].UserID= $parentTable.member_id";
+  return mysqli_query($conn,$sql);
+ }
+
 /* 
   ** This Function Is Upload Image In Database
 */
@@ -164,4 +176,10 @@ function uploadImage($file){
 
  
  endif;
+}
+
+
+// return page 
+function ReturnPage($page='home'){
+  return header("0,URL=$page.'php'");
 }

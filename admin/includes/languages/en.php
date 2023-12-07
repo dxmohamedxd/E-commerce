@@ -8,6 +8,7 @@
           "categories"   =>"Categories",
           "items"        =>"Items",
           "members"=>"Members",
+          "conmments"=>"Comments",
           "statistics"=>"statistics",
           "logs"=>"Logs"
 

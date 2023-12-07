@@ -13,6 +13,7 @@
                 <li class="nav-item"><a href="items.php" class="nav-link"> <?php echo lang("items");?></a></li>
           
                 <li class="nav-item"><a href="members.php" class="nav-link"> <?php echo lang("members");?></a></li>
+                <li class="nav-item"><a href="vue.php" class="nav-link"> <?php echo lang("conmments");?></a></li>
                 <li class="nav-item"><a href="vue.php" class="nav-link"> <?php echo lang("statistics");?></a></li>
                 <li class="nav-item"><a href="#" class="nav-link"> <?php echo lang("logs");?></a></li>
 

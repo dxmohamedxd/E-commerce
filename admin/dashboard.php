@@ -5,8 +5,10 @@ if(isset($_SESSION['username'])){
     $getTitle = "Dashboard";
     /* Start Deshboard Page */
     include "init.php";
-  $userRegisterd = 5;
-  $latests = getLatest("*","USERS","UserID",$userRegisterd);
+  $numUser = 6;
+  $latestUser = getLatest("*","USERS","UserID",$numUser);
+  $numItem=6;
+  $latestItems= getLatest('*',"items",'item_id',$numItem)
 
     ?>
     <div class="container home-stats text-center">
@@ -27,13 +29,13 @@ if(isset($_SESSION['username'])){
               <div class="col-md-3">
                  <div class="stat st-item">
                     Total  Items
-                     <span>100</span>
+                     <span><a href="items.php"><?php  CountItems('item_id','items');?> </a></span>
                  </div>
               </div>
               <div class="col-md-3">
                 <div class="stat st-comment">
                  Total  Comments
-                <span>120</span>
+                <span>0</span>
                </div>
               </div>
          
@@ -45,14 +47,14 @@ if(isset($_SESSION['username'])){
                 <div>
                
                     <div class=" p-2" style="background-color:#eee;border:1px solid #ddd; font-size:20px;">
-                         Latest <?php echo $userRegisterd ?> Registerd Users 
+                         Latest <?php echo $numUser ?> Registerd Users 
                     </div>
                     <div class="panel-body">
                         <div class="form-control p-2 bg-light" style="font-size:20px"> 
                         <ul class="list-unstyled latest_ul">
                         <?php
                     
-                           foreach ($latests as $latest)
+                           foreach ($latestUser as $latest)
                              {
                                echo
                                 "<li>".ucwords($latest[1]).
@@ -76,10 +78,32 @@ if(isset($_SESSION['username'])){
             <div class="col-sm-6">
                 <div>
                     <div class="p-2"  style="background-color:#eee;border:1px solid #ddd; font-size:20px">
-                         Latest Items
+                         Latest Items <?= count($latestItems)?>
                     </div>
                     <div class="panel-body">
-                        <input type="text" class="form-control p-3 bg-light" value="Test" readonly style="font-weight:bold">
+                        <div class="form-control p-2 bg-light" style="font-size:20px"> 
+                        <ul class="list-unstyled latest_ul">
+                        <?php
+                    
+                           foreach ($latestItems as $latest)
+                             {
+                               echo
+                                "<li>".ucwords($latest[1]).
+                                  "<a href='items.php?do=Update&itemId=$latest[0]'>
+                                   <span class='btn btn-success float-end'>
+                                    Edit
+                                   </span></a>";
+                                  //  echo 95,$latest[8];
+                                   if($latest[8]==0){
+                                    echo "<a href='items.php?do=Approve&itemId=$latest[0]' class='btn btn-info float-end ' style='color:white' onclick=\"return confirm('Do You Want To Activate The Member','activate')\">  Approve</a>";
+                                   }
+                                   
+                                   "</li>";
+                              }
+                        
+                           ?>
+                        </ul>
+                         </div>
                    </div> 
                 </div>
             </div>

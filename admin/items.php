@@ -16,32 +16,51 @@ if(isset($_SESSION['username'])){
     $do = isset($_GET['do'])?$_GET['do']:'Manage';
       if($do=='Manage')
           {
-            echo"<h3 class='members my-5'>  All Prodects  </h3>";
-            $prodect = mysqli_query($conn,"SELECT * FROM `items`");
-            echo  "<div class='row'>";
-            while($row = mysqli_fetch_object( $prodect)){
-            echo"
-              <div class='col-sm-12 col-md-6 col-lg-3 col-xl-3 ms-5'>
-                <div class='my-2 card  shadow' style='width: 18rem;'>
-                  <img src='".$UrlImg."$row->image' class='card-img-top' height='190' alt='...'>
-                  <div class='card-body'>
-                    <div class='card-title'>
-                      $row->name
-                      <span class='badge text-light float-none float-sm-end' style='background-color:#3498db'>$row->price</span>
-                    </div>
-                      <p class='card-text'>$row->description</p>
-                  </div>
-                    <div class='card-body text-center'>
-                      <a href='?do=Update&itemId=$row->item_id' class='btn text-light' style='background-color:#3498db;color:#fff'>Edit</a>
-                      <a href='?do=Delete&itemId=$row->item_id' class='btn btn-danger'  onclick=\"return confirm('Are You Sure Delete','Are You Sure')\">Delete</a>
-                    </div>
-                </div>
-              </div>
-            ";
-            }
-        echo "</div>";
+           
+            $items =  mysqli_query($conn,"SELECT * FROM `items`");
+            echo"<h3 class=' members my-3'>  Manager Items  </h3>";
+            echo "<div class='table-responsive'>
+            <table class='main-table text-center table table-bordered'>
+                <tr>
+                  <th>#ID</th>
+                  <th>Item Name</th>
+                  <th>Description</th>
+                  <th>Price</th>
+                  <th>adding Data</th>
+                  <th>Category</th>
+                  <th>Username</th>
+                  <th>Control</th>
+                </tr>";
+            // if(isset($items)){
+              foreach(JoinMoreTable("items",["categries","users"]) as $item){
+                echo "<tr>";
+                   echo "<td>".$item['item_id']."</td>";
+                   echo "<td>".$item['name']."</td>";
+                   echo "<td>".$item['description']."</td>";
+                   echo "<td>".$item['price']."</td>";
+                   echo "<td>".$item['add_date']."</td>";
+                   echo "<td>".$item['cat_name']."</td>";
+                   echo "<td>".$item['user_name']."</td>";
+                   echo"<td>";
+                   if($item['approve']==0){
+                    echo "<a href='?do=Approve&itemId=".$item['item_id']."' class='btn btn-outline-info btn-sm ' onclick=\"return confirm('Do You Want To Activate The items','activate')\">
+                    
+                  <span class='fa fa-check'></span>Approve</a>";
 
-     echo   "<div class='btn-add'>
+                  }
+                 echo "<a href='?do=Update&itemId=".$item['item_id']."' class='btn btn-outline-success btn-sm ms-1' style=\"margin-right:1
+                     0px\" >Edit</a>
+                    <a href='?do=Delete&itemId=".$item['item_id']."' class='btn btn-outline-danger btn-sm ' onclick=\"return confirm('Are You Sure Delete','Are You Sure')\">Delete</a>
+                    ";
+                 
+               echo " </tr>";
+               }
+        
+            echo"</table>";
+       
+       
+
+     echo "<div class='btn-add'>
                <a href='items.php?do=Add' class='mb-3 btn btn float-start'> <span class='i-plus'> + </span></a> 
              </div>";
       }elseif($do=='Add'){
@@ -182,7 +201,9 @@ if(isset($_SESSION['username'])){
                   VALUES('$name','$description','$price',now(),'$country','$nameImage','$status','$category','$member')");
                         if($insert){
                           $thMsg = "<h3 class=' container alert  alert-success text-center'> Add Item Is Successfully</h3>";
-                           redirectHome($thMsg,"back");
+                       redirectHome($thMsg,"back");
+                          // header("REFRESH:2;URL=?do=Manage");
+                          // ReturnPage("items");
                         }
                
                 }
@@ -252,15 +273,55 @@ if(isset($_SESSION['username'])){
                         <div class="col-sm-8 col-md-6">
                           <select name="status"  value="<?= $row->status ?>" class="form-control  p-2" required>
                               <option value="0">....</option>
-                              <option value="1">New</option>
-                              <option value="2">Like New</option>
-                              <option value="3">Used</option>
-                              <option value="4">Very Old</option>
+                              <option value="1" <?=  $row->status==1?"selected":""; ?> >New</option>
+                              <option value="2" <?=  $row->status==2?"selected":""; ?> >Like New</option>
+                              <option value="3" <?=  $row->status==3?"selected":""; ?> >Used</option>
+                              <option value="4" <?=  $row->status==4?"selected":""; ?> >Very Old</option>
                           </select>
                         </div>
                         </div>
                       </div>
-                      
+                      <div class="form-group form-group-lg my-3">
+                      <div class="row">
+                      <label class="col-sm-2 control-label"  style="font-weight: bold;">Member </label>
+                        <div class="col-sm-8 col-md-6">
+                          <select name="member" class="form-control  p-2" required>
+                              <option value="0">....</option>
+                              <?php
+                              $users=  mysqli_query($conn,"SELECT * FROM `users`");
+                           
+                                foreach($users as $user){
+                                  echo "<option  value = '".$user['UserID'] . "'";
+                                   echo $user['UserID'] == $row->member_id?"selected":"";
+                                  echo  ">".$user['Username']."</option>";
+
+                                }
+                          
+                              ?>
+
+                          </select>
+                        </div>
+                        </div>
+                      </div>
+                      <div class="form-group form-group-lg my-3">
+                       <div class="row">
+                        <label class="col-sm-2 control-label"  style="font-weight: bold;">Category</label>
+                        <div class="col-sm-8 col-md-6">
+                          <select name="category" class="form-control  p-2" required>
+                              <option value="0">....</option>
+                              <?php
+                              $query2 =  mysqli_query($conn,"SELECT * FROM `categries`");
+                               while($cats = mysqli_fetch_object($query2)){
+                                echo "<option value='".$cats->ID."'";
+                                echo $cats->ID==$row->cat_id?"selected":"";
+                                echo ">".$cats->Name."</option>";
+                              }
+                              ?>
+
+                          </select>
+                        </div>
+                        </div>
+                      </div>
                       <div class="form-group form-group-lg  my-3">
                       <div class="row">
                       <label class="col-sm-2 control-label"  style="font-weight: bold;">Image  </label>
@@ -310,20 +371,30 @@ if(isset($_SESSION['username'])){
 
             }
         }elseif($do=="Delete") {
+        
                 $itemid = isset($_GET['itemId'])&& is_numeric($_GET['itemId'])?intval($_GET['itemId']):0;
-                 mysqli_query($conn,"DELETE FROM `items` WHERE item_id = $itemid");
-                 $msg = "<h3 class='alert alert-dange'>deleted Item Is Successfully </h3>";
-                 redirectHome($msg,"back");
+          
+                if( CheckItem("item_id",'items',$itemid )  > 0){
+                  mysqli_query($conn,"DELETE FROM `items` WHERE item_id = $itemid");
+                  $msg = "<h3 class='alert alert-danger'>deleted Item Is Successfully </h3>";
+                  redirectHome($msg,"back");
+                }else{
+                  header("location:items.php");
+                }
+                
         }elseif($do=="Approve") {
-            echo "Approve";
-              //  echo "delete";
-          
-          
-              include $tpls."footer.php";
+          $itemid = isset($_GET['itemId']) && is_numeric($_GET['itemId'])?intval($_GET['itemId']):0;
+        
+          if( CheckItem("item_id",'items',$itemid )  > 0){
+              mysqli_query($conn,"UPDATE items SET approve=1 where item_id=$itemid");
+              // $msg = "<h3 class='alert alert-info'> approve Item Is Successfully </h3>";
+              header("location:items.php");
+           }
+          include $tpls."footer.php";
               echo "</div>";
-          
     }else{
       header("location:index.php");
       exit();
     }
   }
+
